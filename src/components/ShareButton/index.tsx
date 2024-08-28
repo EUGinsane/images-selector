@@ -14,11 +14,11 @@ async function urlToFile(url: string, filename: string, mimeType: string) {
   return new File([blob], filename, { type: mimeType });
 }
 
-async function urlToClipboardItem(url: string) {
-  const response = await fetch(url);
-  const blob = await response.blob();
-  return new ClipboardItem({ [blob.type]: blob });
-}
+// async function urlToClipboardItem(url: string) {
+//   const response = await fetch(url);
+//   const blob = await response.blob();
+//   return new ClipboardItem({ [blob.type]: blob });
+// }
 
 const ShareButton: React.FC<Props> = ({ children, images, ...rest }) => {
   const handleShare = async () => {
