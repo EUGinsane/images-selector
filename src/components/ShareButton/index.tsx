@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ImageFile } from "../../fake-apis";
 
 interface Props
@@ -42,9 +43,11 @@ async function urlToPngBlob(url: string): Promise<Blob> {
 }
 
 const ShareButton: React.FC<Props> = ({ children, images, ...rest }) => {
+  const [isSharing, setIsSharing] = useState(false);
   const handleShare = async () => {
-    if (navigator.share) {
+    if (navigator.share && !(/Firefox/.test(navigator.userAgent))) {
       try {
+        setIsSharing(true);
         const files = await Promise.all(
           images.map(({ url }, index) =>
             urlToFile(url, `image${index + 1}.jpg`, "image/jpeg")
@@ -58,28 +61,37 @@ const ShareButton: React.FC<Props> = ({ children, images, ...rest }) => {
       } catch (error) {
         console.error("Failed to share images:", error);
         alert(error);
+      } finally {
+        setIsSharing(false);
       }
     } else {
       try {
-        const pngBlobs = await Promise.all(
-          images.map(({ url }) => urlToPngBlob(url))
-        );
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            "image/png": pngBlobs[0],
-          }),
-        ]);
-        alert("Images converted to PNG and copied to clipboard");
+        setIsSharing(true);
+        if (images.length === 1) {
+          const pngBlob = await urlToPngBlob(images[0].url);
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              "image/png": pngBlob,
+            }),
+          ]);
+          alert("Image converted to PNG and copied to clipboard");
+        } else {
+          const imageLinks = images.map(({ url }) => url).join('\n');
+          await navigator.clipboard.writeText(imageLinks);
+          alert("Image links copied to clipboard");
+        }
       } catch (error) {
-        console.error("Failed to copy images to clipboard:", error);
-        alert("Failed to copy images to clipboard");
+        console.error("Failed to copy to clipboard:", error);
+        alert("Failed to copy to clipboard");
+      } finally {
+        setIsSharing(false);
       }
     }
   };
 
   return (
     <button className="text-blue-500" {...rest} onClick={handleShare}>
-      {children}
+      {isSharing ? "Sharing..." : children}
     </button>
   );
 };
