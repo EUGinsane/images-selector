@@ -57,7 +57,7 @@ const ShareButton: React.FC<Props> = ({ children, images, ...rest }) => {
         });
       } catch (error) {
         console.error("Failed to share images:", error);
-        alert("Failed to share images");
+        alert(error);
       }
     } else {
       try {
