@@ -44,8 +44,8 @@ async function urlToPngBlob(url: string): Promise<Blob> {
 
 const ShareButton: React.FC<Props> = ({ children, images, ...rest }) => {
   const [isSharing, setIsSharing] = useState(false);
-  const isFirefox = /Firefox/.test(navigator.userAgent);
-  const isDesktop = window.matchMedia("(hover: hover)").matches;
+  // const isFirefox = /Firefox/.test(navigator.userAgent);
+  // const isDesktop = window.matchMedia("(hover: hover)").matches;
   const shareApiSupported = !!navigator.share;
 
   const handleShareWithoutShareApi = async () => {
