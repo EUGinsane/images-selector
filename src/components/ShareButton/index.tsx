@@ -78,13 +78,13 @@ const ShareButton: React.FC<Props> = ({ children, images, ...rest }) => {
     });
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     setIsSharing(true);
     try {
       if (shareApiSupported) {
-        handleShareWithShareApi();
+        await handleShareWithShareApi();
       } else {
-        handleShareWithoutShareApi();
+        await handleShareWithoutShareApi();
       }
     } catch (error) {
       console.error("Failed to share", error);
